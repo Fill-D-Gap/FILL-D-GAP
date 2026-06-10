@@ -2,13 +2,14 @@ import { BicepsFlexed, Compass, Flame, Target, Clock} from 'lucide-react'
 
 function Metas () {
     return (
-        <div className="flex flex-col items-center  px-4">
-            <h1 className="font-montserrat text-3xl font-bold mt-10 mb-16 bg-gradient-to-r 
+        <div id="futuro-tuyo" className="flex flex-col items-center mt-10 px-4 ">
+            <h1 className="font-montserrat text-3xl font-bold mt-10 mb-10 bg-gradient-to-r 
             from-[#E9478F] to-[#422C9B] bg-clip-text text-transparent md:text-4xl text-center">
                 ¡El futuro es tuyo!
             </h1>
-            {/* Reconoces tu talento */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl 
+            <div className='flex flex-wrap items-center justify-center gap-6'>
+                {/* Reconoces tu talento */}
+            <div className="flex flex-col  items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     Reconoces tu talento
@@ -25,9 +26,9 @@ function Metas () {
                 </div>
             </div>
             {/* Independencia sobre permanencia */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl 
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
             shadow-sm border border-gray-100 mb-5">
-                <div className="max-w-sm">
+                <div className="">
                     <h2 className="font-montserrat text-xl text-center font-bold mb-3 text-[#262788] md:text-2xl">
                     Independencia sobre permanencia
                 </h2>
@@ -43,7 +44,7 @@ function Metas () {
                 </div>
             </div>
             {/* ¡Tus metas, tu prioridad! */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl 
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     ¡Tus metas, tu prioridad!
@@ -60,7 +61,7 @@ function Metas () {
                 </div>
             </div>
             {/* Autonomía, eficiencia y pasión */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl 
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50 
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     Autonomía, eficiencia y pasión
@@ -77,7 +78,7 @@ function Metas () {
                 </div>
             </div>
             {/* Dueño de tu Tiempo, Amante de tu Oficio */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl 
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
             shadow-sm border border-gray-100 mb-5">
                 <div className='max-w-xs text-center'>
                     <h2 className="font-montserrat text-xl  font-bold mb-3 text-[#262788] md:text-2xl">
@@ -94,6 +95,7 @@ function Metas () {
                         tú tienes el control de tu agenda.
                     </p>
                 </div>
+            </div>
             </div>
         </div>
     )

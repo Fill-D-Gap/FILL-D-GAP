@@ -1,6 +1,6 @@
 function bannerPrincipal() {
     return(
-        <div className="bg-gradient-to-r from-[#422C9B] to-[#E9478F] py-5 rounded-b-lg 
+        <div id='bannerPrincipal' className="bg-gradient-to-r from-[#422C9B] to-[#E9478F] py-5 rounded-b-lg 
         flex flex-col items-start pl-5 gap-3 md:py-33">
             <div className="font-montserrat text-lg text-white font-semibold
             md:text-6xl">

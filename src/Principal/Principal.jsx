@@ -1,6 +1,6 @@
 import MENU from '../Componentes/Menu.jsx'
-import BANNER from '../Componentes/Bann-principal.jsx'
-import METAS from '../Componentes/Metas.jsx'
+import BANNER from '../Componentes/Banner-principal.jsx'
+import TUFUTURO from '../Componentes/El-futuro-es-tuyo.jsx'
 import BANNERFIN from '../Componentes/banner-fin.jsx'
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
       <section className="bg-[#EDEDED] min-h-screen">
         <MENU />
         <BANNER />
-        <METAS/>
+        <TUFUTURO/>
         <BANNERFIN/>
       </section>
 
