@@ -10,8 +10,8 @@ function bannerPrincipal() {
             </div>
             <div className="font-montserrat text-xs text-white
             md:text-4xl">
-                <h2>Llegaste a la plataforma donde tu talento </h2>
-                <h2>y tus metas personales son aliados.</h2>
+                <h2>Cubrimos el puesto que falta para que tu</h2>
+                <h2>empresa no se detenga.</h2>
             </div>
             <button className="bg-[#E9478F] font-montserrat rounded-2xl px-2 py-1 text-xs text-white italic font-semibold
             md:text-3xl md:mt-5 rounded-3xl px-4 py-2 hover:bg-white hover:text-[#E9478F] md:font-bold hover:scale-105

@@ -9,7 +9,7 @@ function Metas () {
             </h1>
             <div className='flex flex-wrap items-center justify-center gap-6'>
                 {/* Reconoces tu talento */}
-            <div className="flex flex-col  items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
+            <div className="flex flex-col  items-center max-w-xl w-full bg-white p-6 rounded-2xl py-5
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     Reconoces tu talento
@@ -26,7 +26,7 @@ function Metas () {
                 </div>
             </div>
             {/* Independencia sobre permanencia */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl py-5
             shadow-sm border border-gray-100 mb-5">
                 <div className="">
                     <h2 className="font-montserrat text-xl text-center font-bold mb-3 text-[#262788] md:text-2xl">
@@ -44,7 +44,7 @@ function Metas () {
                 </div>
             </div>
             {/* ¡Tus metas, tu prioridad! */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl py-5
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     ¡Tus metas, tu prioridad!
@@ -61,7 +61,7 @@ function Metas () {
                 </div>
             </div>
             {/* Autonomía, eficiencia y pasión */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50 
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl py-5
             shadow-sm border border-gray-100 mb-5">
                 <h2 className="font-montserrat text-xl font-bold mb-3 text-[#262788] md:text-2xl">
                     Autonomía, eficiencia y pasión
@@ -78,7 +78,7 @@ function Metas () {
                 </div>
             </div>
             {/* Dueño de tu Tiempo, Amante de tu Oficio */}
-            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl mb:50
+            <div className="flex flex-col items-center max-w-xl w-full bg-white p-6 rounded-2xl py-5
             shadow-sm border border-gray-100 mb-5">
                 <div className='max-w-xs text-center'>
                     <h2 className="font-montserrat text-xl  font-bold mb-3 text-[#262788] md:text-2xl">

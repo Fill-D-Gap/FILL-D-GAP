@@ -23,8 +23,13 @@ function BannerFin () {
                         ¡Síguenos!
                     </h3>
                     <div className="flex gap-4">
-                        <FaFacebook className="w-8 h-8 text-[#262788] hover:text-[#E9478F] cursor-pointer transition-all duration-300 transform hover:scale-115" />
-                        <FaInstagram className="w-8 h-8 text-[#262788] hover:text-[#E9478F] cursor-pointer transition-all duration-300 transform hover:scale-115" />
+                        <a href="https://www.instagram.com/filldgap.pa/">
+                            <FaInstagram className="w-8 h-8 text-[#262788] hover:text-[#E9478F] cursor-pointer transition-all duration-300 transform hover:scale-115" />
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61590333467056">
+                            <FaFacebook className="w-8 h-8 text-[#262788] hover:text-[#E9478F] 
+                            cursor-pointer transition-all duration-300 transform hover:scale-115" />
+                        </a>
                     </div>
                 </div>
 
