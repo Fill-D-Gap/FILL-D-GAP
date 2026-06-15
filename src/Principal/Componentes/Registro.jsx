@@ -1,4 +1,97 @@
+import { useMemo, useState } from 'react'
+import { supabase } from '../../lib/supabaseClient.js'
+
+const initialForm = {
+    fullName: '',
+    email: '',
+    phone: '',
+    vocation: '',
+    province: '',
+    country: '',
+    experienceYears: '',
+    availability: '',
+    license: 'No',
+    licenseCountry: '',
+    referenceLetters: null,
+    message: '',
+}
+
 function Registro() {
+    const [form, setForm] = useState(initialForm)
+    const [status, setStatus] = useState('idle')
+    const [error, setError] = useState('')
+
+    const hasSupabase = useMemo(() => Boolean(supabase), [])
+
+    const onChange = (event) => {
+        const { name, value, files, type } = event.target
+        setForm((current) => ({
+            ...current,
+            [name]: type === 'file' ? files?.[0] ?? null : value,
+        }))
+    }
+
+    const resetForm = () => {
+        setForm(initialForm)
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        setError('')
+        setStatus('submitting')
+
+        try {
+            if (!hasSupabase) {
+                throw new Error('Faltan las variables de Supabase en el entorno.')
+            }
+
+            const payload = {
+                full_name: form.fullName.trim(),
+                email: form.email.trim(),
+                phone: form.phone.trim(),
+                vocation: form.vocation.trim(),
+                province: form.province.trim(),
+                country: form.country.trim(),
+                experience_years: Number(form.experienceYears || 0),
+                availability: form.availability,
+                license: form.license === 'Sí',
+                license_country: form.licenseCountry.trim(),
+                message: form.message.trim(),
+                reference_letter_url: null,
+                status: 'pending',
+            }
+
+            const file = form.referenceLetters
+            if (file) {
+                const safeName = `${Date.now()}-${file.name}`.replace(/\s+/g, '-')
+                const bucketPath = `reference-letters/${safeName}`
+                const { error: uploadError } = await supabase.storage
+                    .from('candidate-files')
+                    .upload(bucketPath, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                    })
+
+                if (uploadError) throw uploadError
+
+                const { data } = supabase.storage
+                    .from('candidate-files')
+                    .getPublicUrl(bucketPath)
+
+                payload.reference_letter_url = data.publicUrl
+            }
+
+            const { error: insertError } = await supabase.from('candidate_applications').insert(payload)
+            if (insertError) throw insertError
+
+            setStatus('success')
+            resetForm()
+        } catch (submitError) {
+            setError(submitError?.message || 'No se pudo enviar el registro.')
+            setStatus('error')
+        }
+    }
+
     return (
         <section id="registro" className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-auto bg-[#F8FCFB] px-4 sm:px-6 lg:px-10 py-12 md:py-16">
             <div className="mx-auto max-w-6xl grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
@@ -20,7 +113,7 @@ function Registro() {
                     </div>
                 </div>
 
-                <form className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
+                <form onSubmit={handleSubmit} className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
                     <h3 className="font-montserrat text-2xl font-bold text-[#262788]">
                         Formulario de inscripción de talento
                     </h3>
@@ -30,58 +123,92 @@ function Registro() {
 
                     <div className="grid gap-4">
                         <label className="grid gap-2">
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Nombre completo</span>
+                            <input name="fullName" value={form.fullName} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
+                        </label>
+                        <label className="grid gap-2">
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Correo electrónico</span>
+                            <input name="email" value={form.email} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="email" required />
+                        </label>
+                        <label className="grid gap-2">
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Teléfono</span>
+                            <input name="phone" value={form.phone} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" required />
+                        </label>
+                        <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tu vocación</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
+                            <input name="vocation" value={form.vocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia de residencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
+                            <input name="province" value={form.province} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
+                        </label>
+                        <label className="grid gap-2">
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
+                            <input name="country" value={form.country} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Disponibilidad para viajar</span>
-                            <select className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95">
-                                <option>Selecciona una opción</option>
-                                <option>Local</option>
-                                <option>Entre provincias</option>
-                                <option>Internacional</option>
+                            <select name="availability" value={form.availability} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
+                                <option value="">Selecciona una opción</option>
+                                <option value="Local">Local</option>
+                                <option value="Entre provincias">Entre provincias</option>
+                                <option value="Internacional">Internacional</option>
                             </select>
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Años de experiencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="number" min="0" />
+                            <input name="experienceYears" value={form.experienceYears} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="number" min="0" required />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Licencia para ejercer</span>
-                            <select className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white">
-                                <option>Selecciona una opción</option>
-                                <option>Sí</option>
-                                <option>No</option>
+                            <select name="license" value={form.license} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white" required>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
                             </select>
                         </label>
+                        {form.license === 'Sí' && (
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País de licencia</span>
+                                <input name="licenseCountry" value={form.licenseCountry} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
+                            </label>
+                        )}
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Cartas de referencia / CV</span>
+                            <input
+                                name="referenceLetters"
+                                onChange={onChange}
+                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B]
+                                file:py-1 file:px-3 file:border-0 file:bg-[#262788] file:text-white file:text-sm file:font-semibold file:font-montserrat
+                                hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer"
+                                type="file"
+                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                            />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Cartas de referencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] 
-                            bg-white w-full text-sm text-[#2B2B2B]
-                            rtl file:ltr
-                            file:py-1 file:px-3
-                            file:border-0 file:bg-[#262788] file:text-white
-                            file:text-sm file:font-semibold file:font-montserrat
-                            hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer" 
-                            type="file" 
-                            />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Mensaje</span>
+                            <textarea name="message" value={form.message} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95 min-h-28" />
                         </label>
                     </div>
 
                     <button
-                        type="button"
-                        className="mt-6 w-full bg-[#262788] text-[#F8FCFB] font-montserrat font-semibold px-5 py-3 hover:bg-[#422C9B] transition-colors"
+                        type="submit"
+                        disabled={status === 'submitting'}
+                        className="mt-6 w-full bg-[#262788] text-[#F8FCFB] font-montserrat font-semibold px-5 py-3 hover:bg-[#422C9B] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        Enviar registro
+                        {status === 'submitting' ? 'Enviando...' : 'Enviar registro'}
                     </button>
+
+                    {error && (
+                        <p className="font-montserrat text-sm text-[#ED5275] mt-4">
+                            {error}
+                        </p>
+                    )}
+
+                    {status === 'success' && (
+                        <p className="font-montserrat text-sm text-[#262788] mt-4 font-semibold">
+                            Registro enviado. Lo revisaremos pronto.
+                        </p>
+                    )}
 
                     <p className="font-montserrat text-xs text-[#262788] mt-4 ">
                         Los datos suministrados se verificarán al encontrar tu eslabón de enganche.
