@@ -20,7 +20,7 @@ function Registro() {
                     </div>
                 </div>
 
-                <form className="bg-white border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
+                <form className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
                     <h3 className="font-montserrat text-2xl font-bold text-[#262788]">
                         Formulario de inscripción de talento
                     </h3>
@@ -31,15 +31,15 @@ function Registro() {
                     <div className="grid gap-4">
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tu vocación</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788]" type="text" />
+                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia de residencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788]" type="text" />
+                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Disponibilidad para viajar</span>
-                            <select className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white">
+                            <select className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95">
                                 <option>Selecciona una opción</option>
                                 <option>Local</option>
                                 <option>Entre provincias</option>
@@ -48,7 +48,7 @@ function Registro() {
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Años de experiencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788]" type="number" min="0" />
+                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="number" min="0" />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Licencia para ejercer</span>
@@ -60,11 +60,19 @@ function Registro() {
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788]" type="text" />
+                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
                         </label>
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Cartas de referencia</span>
-                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white" type="file" />
+                            <input className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] 
+                            bg-white w-full text-sm text-[#2B2B2B]
+                            rtl file:ltr
+                            file:py-1 file:px-3
+                            file:border-0 file:bg-[#262788] file:text-white
+                            file:text-sm file:font-semibold file:font-montserrat
+                            hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer" 
+                            type="file" 
+                            />
                         </label>
                     </div>
 
@@ -75,7 +83,7 @@ function Registro() {
                         Enviar registro
                     </button>
 
-                    <p className="font-montserrat text-xs text-[#878787] mt-4">
+                    <p className="font-montserrat text-xs text-[#262788] mt-4 ">
                         Los datos suministrados se verificarán al encontrar tu eslabón de enganche.
                     </p>
                 </form>
