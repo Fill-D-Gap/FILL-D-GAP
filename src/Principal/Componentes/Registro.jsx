@@ -12,7 +12,6 @@ const initialForm = {
     availability: '',
     license: 'No',
     licenseCountry: '',
-    referenceLetters: null,
     message: '',
 }
 
@@ -24,10 +23,10 @@ function Registro() {
     const hasSupabase = useMemo(() => Boolean(supabase), [])
 
     const onChange = (event) => {
-        const { name, value, files, type } = event.target
+        const { name, value } = event.target
         setForm((current) => ({
             ...current,
-            [name]: type === 'file' ? files?.[0] ?? null : value,
+            [name]: value,
         }))
     }
 
@@ -56,32 +55,15 @@ function Registro() {
                 availability: form.availability,
                 license: form.license === 'Sí',
                 license_country: form.licenseCountry.trim(),
-                message: form.message.trim(),
                 reference_letter_url: null,
+                message: form.message.trim(),
                 status: 'pending',
             }
 
-            const file = form.referenceLetters
-            if (file) {
-                const safeName = `${Date.now()}-${file.name}`.replace(/\s+/g, '-')
-                const bucketPath = `reference-letters/${safeName}`
-                const { error: uploadError } = await supabase.storage
-                    .from('candidate-files')
-                    .upload(bucketPath, file, {
-                        cacheControl: '3600',
-                        upsert: false,
-                    })
+            const { error: insertError } = await supabase
+                .from('candidate_applications')
+                .insert(payload)
 
-                if (uploadError) throw uploadError
-
-                const { data } = supabase.storage
-                    .from('candidate-files')
-                    .getPublicUrl(bucketPath)
-
-                payload.reference_letter_url = data.publicUrl
-            }
-
-            const { error: insertError } = await supabase.from('candidate_applications').insert(payload)
             if (insertError) throw insertError
 
             setStatus('success')
@@ -173,18 +155,6 @@ function Registro() {
                             </label>
                         )}
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Cartas de referencia / CV</span>
-                            <input
-                                name="referenceLetters"
-                                onChange={onChange}
-                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B]
-                                file:py-1 file:px-3 file:border-0 file:bg-[#262788] file:text-white file:text-sm file:font-semibold file:font-montserrat
-                                hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer"
-                                type="file"
-                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                            />
-                        </label>
-                        <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Mensaje</span>
                             <textarea name="message" value={form.message} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95 min-h-28" />
                         </label>
@@ -210,7 +180,7 @@ function Registro() {
                         </p>
                     )}
 
-                    <p className="font-montserrat text-xs text-[#262788] mt-4 ">
+                    <p className="font-montserrat text-xs text-[#262788] mt-4">
                         Los datos suministrados se verificarán al encontrar tu eslabón de enganche.
                     </p>
                 </form>
