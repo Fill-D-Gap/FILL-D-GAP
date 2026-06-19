@@ -12,7 +12,7 @@ const initialForm = {
     availability: '',
     license: 'No',
     licenseCountry: '',
-    message: '',
+    cvFile: null,
 }
 
 function Registro() {
@@ -23,10 +23,10 @@ function Registro() {
     const hasSupabase = useMemo(() => Boolean(supabase), [])
 
     const onChange = (event) => {
-        const { name, value } = event.target
+        const { name, value, files, type } = event.target
         setForm((current) => ({
             ...current,
-            [name]: value,
+            [name]: type === 'file' ? files?.[0] ?? null : value,
         }))
     }
 
@@ -44,6 +44,34 @@ function Registro() {
                 throw new Error('Faltan las variables de Supabase en el entorno.')
             }
 
+            let cvUrl = null
+            if (form.cvFile) {
+                const file = form.cvFile
+                const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+                if (!isPdf) {
+                    throw new Error('El CV debe ser un archivo PDF.')
+                }
+
+                const safeName = `${Date.now()}-${file.name}`.replace(/\s+/g, '-')
+                const bucketPath = `cvs/${safeName}`
+
+                const { error: uploadError } = await supabase.storage
+                    .from('candidate-files')
+                    .upload(bucketPath, file, {
+                        cacheControl: '3600',
+                        upsert: false,
+                        contentType: 'application/pdf',
+                    })
+
+                if (uploadError) throw uploadError
+
+                const { data } = supabase.storage
+                    .from('candidate-files')
+                    .getPublicUrl(bucketPath)
+
+                cvUrl = data.publicUrl
+            }
+
             const payload = {
                 full_name: form.fullName.trim(),
                 email: form.email.trim(),
@@ -55,8 +83,7 @@ function Registro() {
                 availability: form.availability,
                 license: form.license === 'Sí',
                 license_country: form.licenseCountry.trim(),
-                reference_letter_url: null,
-                message: form.message.trim(),
+                reference_letter_url: cvUrl,
                 status: 'pending',
             }
 
@@ -155,8 +182,19 @@ function Registro() {
                             </label>
                         )}
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Mensaje</span>
-                            <textarea name="message" value={form.message} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95 min-h-28" />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Currículum</span>
+                            <input
+                                name="cvFile"
+                                onChange={onChange}
+                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B]
+                                file:py-1 file:px-3 file:border-0 file:bg-[#262788] file:text-white file:text-sm file:font-semibold file:font-montserrat
+                                hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer"
+                                type="file"
+                                accept=".pdf,application/pdf"
+                            />
+                            <span className="font-montserrat text-xs text-[#878787]">
+                                Solo PDF.
+                            </span>
                         </label>
                     </div>
 

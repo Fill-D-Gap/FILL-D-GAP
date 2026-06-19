@@ -105,7 +105,7 @@ function Menu() {
                         </li>
                     </ul>
                 </div>
-                <div className="md:invisible">
+                <div className="md:invisible md:pl-50">
                     <button onClick={() => menusetOpen(true)} className="text-[#F8FCFB] focus:outline-none flex items-center justify-center">
                         <IconMenu className="h-10 w-auto" />
                     </button>

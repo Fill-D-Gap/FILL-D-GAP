@@ -4,7 +4,7 @@ function BannerPrincipal() {
             <div className="mx-auto flex h-full max-w-6xl items-center">
                 <div className="w-full bg-[#262788] text-[#F8FCFB] px-6 py-10 md:px-10 md:py-14">
                     <p className="font-montserrat text-sm uppercase tracking-[0.24em] text-[#FECF64] font-semibold mb-4">
-                        Comunidad Fill D Gap
+                        Fill D Gap
                     </p>
                     <h1 className="font-montserrat text-3xl md:text-6xl font-bold leading-tight max-w-4xl">
                         Cubrimos el puesto que falta para que tu empresa no se detenga.
