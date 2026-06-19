@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useRef, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient.js'
 
 const initialForm = {
@@ -19,12 +19,7 @@ function Registro() {
     const [form, setForm] = useState(initialForm)
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState('')
-    const envStatus = {
-        url: Boolean(import.meta.env.VITE_SUPABASE_URL),
-        key: Boolean(import.meta.env.VITE_SUPABASE_ANON_KEY),
-    }
-
-    const hasSupabase = useMemo(() => Boolean(supabase), [])
+    const fileInputRef = useRef(null)
 
     const onChange = (event) => {
         const { name, value, files, type } = event.target
@@ -36,6 +31,9 @@ function Registro() {
 
     const resetForm = () => {
         setForm(initialForm)
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+        }
     }
 
     const handleSubmit = async (event) => {
@@ -44,7 +42,7 @@ function Registro() {
         setStatus('submitting')
 
         try {
-            if (!hasSupabase) {
+            if (!supabase) {
                 throw new Error('Faltan las variables de Supabase en el entorno.')
             }
 
@@ -124,10 +122,6 @@ function Registro() {
                             No te parece posible y quieres saber más? Más adelante podrá ampliarse esta sección para quienes busquen información adicional.
                         </p>
                     </div>
-                    <div className="mt-4 border border-dashed border-[#262788]/30 bg-white px-4 py-3 text-xs font-montserrat text-[#262788]">
-                        <div>VITE_SUPABASE_URL: {envStatus.url ? 'OK' : 'Missing'}</div>
-                        <div>VITE_SUPABASE_ANON_KEY: {envStatus.key ? 'OK' : 'Missing'}</div>
-                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
@@ -192,6 +186,7 @@ function Registro() {
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Currículum</span>
                             <input
+                                ref={fileInputRef}
                                 name="cvFile"
                                 onChange={onChange}
                                 className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B]
