@@ -116,10 +116,13 @@ function Registro() {
                     <p className="font-montserrat text-base md:text-lg text-[#2B2B2B] mt-4 max-w-2xl">
                         Completa tus datos para verificar tu perfil y avanzar en el proceso de ingreso.
                     </p>
-                    <div className="mt-8 bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6">
-                        <h3 className="font-montserrat text-lg font-bold text-[#262788]">Interesados en saber más</h3>
+                    <div className="mt-8 bg-white/80 border border-[#DFE4EA] px-6 py-6">
+                        <h3 className="font-montserrat text-lg font-bold text-[#262788]">Preguntas frecuentes</h3>
                         <p className="font-montserrat text-sm md:text-base text-[#2B2B2B] mt-2">
-                            No te parece posible y quieres saber más? Más adelante podrá ampliarse esta sección para quienes busquen información adicional.
+                            Más adelante esta área puede convertirse en una sección de respuestas rápidas para dudas comunes.
+                        </p>
+                        <p className="font-montserrat text-xs text-[#878787] mt-3">
+                            Por ahora la prioridad es que el usuario vea el valor de la comunidad y complete su registro.
                         </p>
                     </div>
                 </div>
