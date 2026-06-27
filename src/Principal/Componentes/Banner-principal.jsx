@@ -1,6 +1,6 @@
 function BannerPrincipal() {
     return (
-        <section id="bannerPrincipal" className="sticky top-[72px] z-10 h-[calc(100vh-72px)] overflow-hidden bg-[#ECFC6B] px-4 sm:px-6 lg:px-10 py-10 md:py-16">
+        <section id="bannerPrincipal" className="sticky top-[72px] z-10 h-[calc(100vh-72px)] overflow-hidden bg-[#D4FCF4] px-4 sm:px-6 lg:px-10 py-10 md:py-16">
             <div className="mx-auto flex h-full max-w-6xl items-center">
                 <div className="w-full bg-[#262788] text-[#F8FCFB] px-6 py-10 md:px-10 md:py-14">
                     <p className="font-montserrat text-sm uppercase tracking-[0.24em] text-[#FECF64] font-semibold mb-4">

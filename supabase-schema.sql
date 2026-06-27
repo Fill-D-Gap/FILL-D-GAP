@@ -3,8 +3,12 @@ create table if not exists public.candidate_applications (
   created_at timestamptz not null default now(),
   full_name text not null,
   email text not null,
+  phone_country_code text not null,
   phone text not null,
+  document_type text not null,
+  document_number text not null,
   vocation text not null,
+  secondary_vocation text,
   province text not null,
   country text not null,
   experience_years integer not null default 0,
@@ -12,9 +16,11 @@ create table if not exists public.candidate_applications (
   license boolean not null default false,
   license_country text,
   reference_letter_url text,
-  message text,
   status text not null default 'pending'
 );
 
 create unique index if not exists candidate_applications_email_idx
   on public.candidate_applications (email);
+
+create unique index if not exists candidate_applications_document_idx
+  on public.candidate_applications (document_type, document_number);

@@ -1,13 +1,73 @@
 import { useRef, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient.js'
 
+const countries = [
+    { code: '+507', label: 'Panamá' },
+    { code: '+1', label: 'Estados Unidos / Canadá' },
+    { code: '+52', label: 'México' },
+    { code: '+57', label: 'Colombia' },
+    { code: '+58', label: 'Venezuela' },
+    { code: '+506', label: 'Costa Rica' },
+    { code: '+503', label: 'El Salvador' },
+    { code: '+504', label: 'Honduras' },
+    { code: '+505', label: 'Nicaragua' },
+    { code: '+502', label: 'Guatemala' },
+    { code: '+593', label: 'Ecuador' },
+    { code: '+51', label: 'Perú' },
+    { code: '+54', label: 'Argentina' },
+    { code: '+56', label: 'Chile' },
+    { code: '+55', label: 'Brasil' },
+    { code: '+34', label: 'España' },
+]
+
+const provincesByCountry = {
+    Panamá: [
+        'Bocas del Toro',
+        'Chiriquí',
+        'Coclé',
+        'Colón',
+        'Darién',
+        'Herrera',
+        'Los Santos',
+        'Panamá',
+        'Panamá Oeste',
+        'Veraguas',
+        'Guna Yala',
+        'Ngäbe-Buglé',
+        'Emberá-Wounaan',
+    ],
+    'Estados Unidos / Canadá': ['Alberta', 'British Columbia', 'Ontario', 'Quebec', 'Texas', 'Florida', 'New York', 'California'],
+    México: ['Ciudad de México', 'Jalisco', 'Nuevo León', 'Puebla', 'Yucatán'],
+    Colombia: ['Antioquia', 'Atlántico', 'Bogotá D.C.', 'Cundinamarca', 'Valle del Cauca'],
+    Venezuela: ['Caracas', 'Miranda', 'Aragua', 'Carabobo', 'Zulia'],
+    'Costa Rica': ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste'],
+    'El Salvador': ['San Salvador', 'Santa Ana', 'San Miguel', 'La Libertad'],
+    Honduras: ['Francisco Morazán', 'Cortés', 'Atlántida'],
+    Nicaragua: ['Managua', 'León', 'Granada'],
+    Guatemala: ['Guatemala', 'Sacatepéquez', 'Quetzaltenango'],
+    Ecuador: ['Pichincha', 'Guayas', 'Azuay'],
+    Perú: ['Lima', 'Arequipa', 'Cusco'],
+    Argentina: ['Buenos Aires', 'Córdoba', 'Santa Fe'],
+    Chile: ['Santiago', 'Valparaíso', 'Biobío'],
+    Brasil: ['São Paulo', 'Rio de Janeiro', 'Minas Gerais'],
+    España: ['Madrid', 'Barcelona', 'Valencia'],
+}
+
+const documentTypes = ['Cédula', 'Pasaporte']
+const availabilityOptions = ['Local', 'Entre provincias', 'Internacional']
+const licenseOptions = ['Sí', 'No']
+
 const initialForm = {
     fullName: '',
     email: '',
-    phone: '',
+    phoneCountryCode: '+507',
+    phoneNumber: '',
+    documentType: 'Cédula',
+    documentNumber: '',
     vocation: '',
+    secondaryVocation: '',
     province: '',
-    country: '',
+    country: 'Panamá',
     experienceYears: '',
     availability: '',
     license: 'No',
@@ -21,12 +81,25 @@ function Registro() {
     const [error, setError] = useState('')
     const fileInputRef = useRef(null)
 
+    const provinceOptions = provincesByCountry[form.country] ?? []
+
     const onChange = (event) => {
         const { name, value, files, type } = event.target
-        setForm((current) => ({
-            ...current,
-            [name]: type === 'file' ? files?.[0] ?? null : value,
-        }))
+        setForm((current) => {
+            if (name === 'country') {
+                const nextProvinceOptions = provincesByCountry[value] ?? []
+                return {
+                    ...current,
+                    country: value,
+                    province: nextProvinceOptions.includes(current.province) ? current.province : '',
+                }
+            }
+
+            return {
+                ...current,
+                [name]: type === 'file' ? files?.[0] ?? null : value,
+            }
+        })
     }
 
     const resetForm = () => {
@@ -77,14 +150,18 @@ function Registro() {
             const payload = {
                 full_name: form.fullName.trim(),
                 email: form.email.trim(),
-                phone: form.phone.trim(),
+                phone_country_code: form.phoneCountryCode,
+                phone: form.phoneNumber.trim(),
+                document_type: form.documentType,
+                document_number: form.documentNumber.trim(),
                 vocation: form.vocation.trim(),
+                secondary_vocation: form.secondaryVocation.trim() || null,
                 province: form.province.trim(),
                 country: form.country.trim(),
                 experience_years: Number(form.experienceYears || 0),
                 availability: form.availability,
                 license: form.license === 'Sí',
-                license_country: form.licenseCountry.trim(),
+                license_country: form.license === 'Sí' ? form.licenseCountry.trim() : null,
                 reference_letter_url: cvUrl,
                 status: 'pending',
             }
@@ -93,7 +170,12 @@ function Registro() {
                 .from('candidate_applications')
                 .insert(payload)
 
-            if (insertError) throw insertError
+            if (insertError) {
+                if (insertError.code === '23505') {
+                    throw new Error('Ya existe un registro con ese documento de identidad.')
+                }
+                throw insertError
+            }
 
             setStatus('success')
             resetForm()
@@ -144,29 +226,83 @@ function Registro() {
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Correo electrónico</span>
                             <input name="email" value={form.email} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="email" required />
                         </label>
-                        <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Teléfono</span>
-                            <input name="phone" value={form.phone} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" required />
-                        </label>
+
+                        <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Código país</span>
+                                <select name="phoneCountryCode" value={form.phoneCountryCode} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
+                                    {countries.map((country) => (
+                                        <option key={country.code} value={country.code}>
+                                            {country.code} - {country.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Teléfono</span>
+                                <input name="phoneNumber" value={form.phoneNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" inputMode="tel" placeholder="Número de teléfono" required />
+                            </label>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tipo de documento</span>
+                                <select name="documentType" value={form.documentType} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
+                                    {documentTypes.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Número de documento</span>
+                                <input name="documentNumber" value={form.documentNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
+                            </label>
+                        </div>
+
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tu vocación</span>
                             <input name="vocation" value={form.vocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia de residencia</span>
-                            <input name="province" value={form.province} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Segunda vocación</span>
+                            <input name="secondaryVocation" value={form.secondaryVocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" placeholder="Opcional" />
                         </label>
-                        <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
-                            <input name="country" value={form.country} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
-                        </label>
+
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
+                                <select name="country" value={form.country} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
+                                    {Object.keys(provincesByCountry).map((countryName) => (
+                                        <option key={countryName} value={countryName}>
+                                            {countryName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label className="grid gap-2">
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia de residencia</span>
+                                <select name="province" value={form.province} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
+                                    <option value="">Selecciona una provincia</option>
+                                    {provinceOptions.map((province) => (
+                                        <option key={province} value={province}>
+                                            {province}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Disponibilidad para viajar</span>
                             <select name="availability" value={form.availability} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                 <option value="">Selecciona una opción</option>
-                                <option value="Local">Local</option>
-                                <option value="Entre provincias">Entre provincias</option>
-                                <option value="Internacional">Internacional</option>
+                                {availabilityOptions.map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
                             </select>
                         </label>
                         <label className="grid gap-2">
@@ -176,14 +312,17 @@ function Registro() {
                         <label className="grid gap-2">
                             <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Licencia para ejercer</span>
                             <select name="license" value={form.license} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white" required>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
+                                {licenseOptions.map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
                             </select>
                         </label>
                         {form.license === 'Sí' && (
                             <label className="grid gap-2">
                                 <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País de licencia</span>
-                                <input name="licenseCountry" value={form.licenseCountry} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" />
+                                <input name="licenseCountry" value={form.licenseCountry} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                             </label>
                         )}
                         <label className="grid gap-2">
@@ -192,9 +331,7 @@ function Registro() {
                                 ref={fileInputRef}
                                 name="cvFile"
                                 onChange={onChange}
-                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B]
-                                file:py-1 file:px-3 file:border-0 file:bg-[#262788] file:text-white file:text-sm file:font-semibold file:font-montserrat
-                                hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer"
+                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white w-full text-sm text-[#2B2B2B] file:py-1 file:px-3 file:border-0 file:bg-[#262788] file:text-white file:text-sm file:font-semibold file:font-montserrat hover:file:bg-[#422C9B] file:transition-colors file:cursor-pointer"
                                 type="file"
                                 accept=".pdf,application/pdf"
                             />
