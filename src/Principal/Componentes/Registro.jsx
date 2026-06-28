@@ -207,68 +207,109 @@ function Registro() {
         }
     }
 
-    return (
-        <section id="registro" className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-auto bg-[#F8FCFB] px-4 sm:px-6 lg:px-10 py-12 md:py-16">
-            <div className="mx-auto max-w-6xl grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                <div>
-                    <p className="font-montserrat text-sm uppercase tracking-[0.24em] text-[#262788] font-semibold mb-3">
-                        Registro
-                    </p>
-                    <h2 className="font-montserrat text-3xl md:text-5xl font-bold text-[#262788] leading-tight">
-                        Register and join our community.
-                    </h2>
-                    <p className="font-montserrat text-base md:text-lg text-[#2B2B2B] mt-4 max-w-2xl">
-                        Complete your details to verify your profile and move forward in the process.
-                    </p>
-                    <div className="mt-8 bg-white/80 border border-[#DFE4EA] px-6 py-6">
-                        <h3 className="font-montserrat text-lg font-bold text-[#262788]">Frequently asked questions</h3>
-                        <p className="font-montserrat text-sm md:text-base text-[#2B2B2B] mt-2">
-                            Later this area can become a quick-answer section for common doubts.
-                        </p>
-                        <p className="font-montserrat text-xs text-[#878787] mt-3">
-                            For now the priority is for the user to see the value of the community and finish registration.
-                        </p>
-                    </div>
-                </div>
-
-                <form onSubmit={handleSubmit} className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
-                    <h3 className="font-montserrat text-2xl font-bold text-[#262788]">
-                        Talent registration form
+return (
+    <section id="registro" className="sticky top-[72px] z-30 h-[calc(100vh-72px)] overflow-auto bg-[#F8FCFB] px-4 sm:px-6 lg:px-10 py-12 md:py-16">
+        <div className="mx-auto max-w-6xl grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+                <p className="font-montserrat text-sm uppercase tracking-[0.24em] text-[#262788] font-semibold mb-3">
+                    Registro
+                </p>
+                <h2 className="font-montserrat text-3xl md:text-5xl font-bold text-[#262788] leading-tight">
+                    Regístrate y únete a nuestra comunidad.
+                </h2>
+                <p className="font-montserrat text-base md:text-lg text-[#2B2B2B] mt-4 max-w-2xl">
+                    Completa tus datos para verificar tu perfil y avanzar en el proceso.
+                </p>
+                <div className="mt-8 bg-white/80 border border-[#DFE4EA] px-6 py-6">
+                    <h3 className="font-montserrat text-lg font-bold text-[#262788]">
+                        Preguntas frecuentes
                     </h3>
-                    <p className="font-montserrat text-sm text-[#2B2B2B] mt-2 mb-6">
-                        Register and become part of our community.
+                    <p className="font-montserrat text-sm md:text-base text-[#2B2B2B] mt-2">
+                        Más adelante esta área puede convertirse en una sección de respuestas rápidas para dudas comunes.
                     </p>
+                    <p className="font-montserrat text-xs text-[#878787] mt-3">
+                        Por ahora, la prioridad es que el usuario vea el valor de la comunidad y complete su registro.
+                    </p>
+                </div>
+            </div>
 
-                    <div className="grid gap-4">
+            <form onSubmit={handleSubmit} className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
+                <h3 className="font-montserrat text-2xl font-bold text-[#262788]">
+                    Formulario de registro de talento
+                </h3>
+                <p className="font-montserrat text-sm text-[#2B2B2B] mt-2 mb-6">
+                    Regístrate y forma parte de nuestra comunidad.
+                </p>
+
+                <div className="grid gap-4">
+                    <label className="grid gap-2">
+                        <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">
+                            Nombre completo
+                        </span>
+                        <input
+                            name="fullName"
+                            value={form.fullName}
+                            onChange={onChange}
+                            className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95"
+                            type="text"
+                            required
+                        />
+                    </label>
+
+                    <label className="grid gap-2">
+                        <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">
+                            Correo
+                        </span>
+                        <input
+                            name="email"
+                            value={form.email}
+                            onChange={onChange}
+                            className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95"
+                            type="email"
+                            required
+                        />
+                    </label>
+
+                    <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Full name</span>
-                            <input name="fullName" value={form.fullName} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
-                        </label>
-                        <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Email</span>
-                            <input name="email" value={form.email} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="email" required />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">
+                                Código de país
+                            </span>
+                            <select
+                                name="phoneCountryCode"
+                                value={form.phoneCountryCode}
+                                onChange={onChange}
+                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95"
+                                required
+                            >
+                                {countries.map((country) => (
+                                    <option key={country.code} value={country.code}>
+                                        {country.code} - {country.label}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
 
-                        <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
-                            <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Country code</span>
-                                <select name="phoneCountryCode" value={form.phoneCountryCode} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
-                                    {countries.map((country) => (
-                                        <option key={country.code} value={country.code}>
-                                            {country.code} - {country.label}
-                                        </option>
-                                    ))}
-                                </select>
-                            </label>
-                            <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Phone number</span>
-                                <input name="phoneNumber" value={form.phoneNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" inputMode="tel" placeholder="Phone number" required />
-                            </label>
-                        </div>
+                        <label className="grid gap-2">
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">
+                                Celular
+                            </span>
+                            <input
+                                name="phoneNumber"
+                                value={form.phoneNumber}
+                                onChange={onChange}
+                                className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95"
+                                type="tel"
+                                inputMode="tel"
+                                placeholder="Número de teléfono"
+                                required
+                            />
+                        </label>
+                    </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Document type</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tipo de documento</span>
                                 <select name="documentType" value={form.documentType} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     {documentTypes.map((option) => (
                                         <option key={option} value={option}>
@@ -278,23 +319,23 @@ function Registro() {
                                 </select>
                             </label>
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Document number</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Numero de identidad</span>
                                 <input name="documentNumber" value={form.documentNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                             </label>
                         </div>
 
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Your vocation</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tu vocación</span>
                             <input name="vocation" value={form.vocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Second vocation</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Segunda vocación</span>
                             <input name="secondaryVocation" value={form.secondaryVocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" placeholder="Optional" />
                         </label>
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Country</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Ciudad</span>
                                 <select name="country" value={form.country} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     {Object.keys(provincesByCountry).map((countryName) => (
                                         <option key={countryName} value={countryName}>
@@ -304,7 +345,7 @@ function Registro() {
                                 </select>
                             </label>
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Province</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia</span>
                                 <select name="province" value={form.province} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     <option value="">Select a province</option>
                                     {provinceOptions.map((province) => (
@@ -317,7 +358,7 @@ function Registro() {
                         </div>
 
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Travel availability</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Disponibilidad para viajar</span>
                             <select name="availability" value={form.availability} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                 <option value="">Select an option</option>
                                 {availabilityOptions.map((option) => (
@@ -328,11 +369,11 @@ function Registro() {
                             </select>
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Years of experience</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Años de experiencia</span>
                             <input name="experienceYears" value={form.experienceYears} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="number" min="0" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">License to practice</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Licencia para ejercer</span>
                             <select name="license" value={form.license} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white" required>
                                 {licenseOptions.map((option) => (
                                     <option key={option} value={option}>
@@ -343,7 +384,7 @@ function Registro() {
                         </label>
                         {form.license === 'Si' && (
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">License country</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País de licencia</span>
                                 <input name="licenseCountry" value={form.licenseCountry} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                             </label>
                         )}
@@ -358,7 +399,7 @@ function Registro() {
                                 accept=".pdf,application/pdf"
                             />
                             <span className="font-montserrat text-xs text-[#878787]">
-                                Only PDF files up to 45 MB.
+                                Solo archivos PDF de hasta 45 MB.
                             </span>
                         </label>
                     </div>
@@ -379,12 +420,12 @@ function Registro() {
 
                     {status === 'success' && (
                         <p className="font-montserrat text-sm text-[#262788] mt-4 font-semibold">
-                            Registration sent. We will review it soon.
+                            Registro enviado.
                         </p>
                     )}
 
                     <p className="font-montserrat text-xs text-[#262788] mt-4">
-                        Submitted data will be verified when your matching connection is found.
+                        Los datos enviados se verificarán cuando se encuentre su conexión coincidente.
                     </p>
                 </form>
             </div>
