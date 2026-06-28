@@ -1,10 +1,13 @@
-import { useRef, useState } from 'react'
+﻿import { useRef, useState } from 'react'
 import { supabase } from '../../lib/supabaseClient.js'
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '')
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
 const countries = [
-    { code: '+507', label: 'Panamá' },
-    { code: '+1', label: 'Estados Unidos / Canadá' },
-    { code: '+52', label: 'México' },
+    { code: '+507', label: 'Panama' },
+    { code: '+1', label: 'United States / Canada' },
+    { code: '+52', label: 'Mexico' },
     { code: '+57', label: 'Colombia' },
     { code: '+58', label: 'Venezuela' },
     { code: '+506', label: 'Costa Rica' },
@@ -13,61 +16,61 @@ const countries = [
     { code: '+505', label: 'Nicaragua' },
     { code: '+502', label: 'Guatemala' },
     { code: '+593', label: 'Ecuador' },
-    { code: '+51', label: 'Perú' },
+    { code: '+51', label: 'Peru' },
     { code: '+54', label: 'Argentina' },
     { code: '+56', label: 'Chile' },
-    { code: '+55', label: 'Brasil' },
-    { code: '+34', label: 'España' },
+    { code: '+55', label: 'Brazil' },
+    { code: '+34', label: 'Spain' },
 ]
 
 const provincesByCountry = {
-    Panamá: [
+    Panama: [
         'Bocas del Toro',
-        'Chiriquí',
-        'Coclé',
-        'Colón',
-        'Darién',
+        'Chiriqui',
+        'Cocle',
+        'Colon',
+        'Darien',
         'Herrera',
         'Los Santos',
-        'Panamá',
-        'Panamá Oeste',
+        'Panama',
+        'Panama Oeste',
         'Veraguas',
         'Guna Yala',
-        'Ngäbe-Buglé',
-        'Emberá-Wounaan',
+        'Ngabe-Bugle',
+        'Embera-Wounaan',
     ],
-    'Estados Unidos / Canadá': ['Alberta', 'British Columbia', 'Ontario', 'Quebec', 'Texas', 'Florida', 'New York', 'California'],
-    México: ['Ciudad de México', 'Jalisco', 'Nuevo León', 'Puebla', 'Yucatán'],
-    Colombia: ['Antioquia', 'Atlántico', 'Bogotá D.C.', 'Cundinamarca', 'Valle del Cauca'],
+    'United States / Canada': ['Alberta', 'British Columbia', 'Ontario', 'Quebec', 'Texas', 'Florida', 'New York', 'California'],
+    Mexico: ['Ciudad de Mexico', 'Jalisco', 'Nuevo Leon', 'Puebla', 'Yucatan'],
+    Colombia: ['Antioquia', 'Atlantico', 'Bogota D.C.', 'Cundinamarca', 'Valle del Cauca'],
     Venezuela: ['Caracas', 'Miranda', 'Aragua', 'Carabobo', 'Zulia'],
-    'Costa Rica': ['San José', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste'],
+    'Costa Rica': ['San Jose', 'Alajuela', 'Cartago', 'Heredia', 'Guanacaste'],
     'El Salvador': ['San Salvador', 'Santa Ana', 'San Miguel', 'La Libertad'],
-    Honduras: ['Francisco Morazán', 'Cortés', 'Atlántida'],
-    Nicaragua: ['Managua', 'León', 'Granada'],
-    Guatemala: ['Guatemala', 'Sacatepéquez', 'Quetzaltenango'],
+    Honduras: ['Francisco Morazan', 'Cortes', 'Atlantida'],
+    Nicaragua: ['Managua', 'Leon', 'Granada'],
+    Guatemala: ['Guatemala', 'Sacatepequez', 'Quetzaltenango'],
     Ecuador: ['Pichincha', 'Guayas', 'Azuay'],
-    Perú: ['Lima', 'Arequipa', 'Cusco'],
-    Argentina: ['Buenos Aires', 'Córdoba', 'Santa Fe'],
-    Chile: ['Santiago', 'Valparaíso', 'Biobío'],
-    Brasil: ['São Paulo', 'Rio de Janeiro', 'Minas Gerais'],
-    España: ['Madrid', 'Barcelona', 'Valencia'],
+    Peru: ['Lima', 'Arequipa', 'Cusco'],
+    Argentina: ['Buenos Aires', 'Cordoba', 'Santa Fe'],
+    Chile: ['Santiago', 'Valparaiso', 'Biobio'],
+    Brazil: ['Sao Paulo', 'Rio de Janeiro', 'Minas Gerais'],
+    Spain: ['Madrid', 'Barcelona', 'Valencia'],
 }
 
-const documentTypes = ['Cédula', 'Pasaporte']
+const documentTypes = ['Cedula', 'Pasaporte']
 const availabilityOptions = ['Local', 'Entre provincias', 'Internacional']
-const licenseOptions = ['Sí', 'No']
+const licenseOptions = ['Si', 'No']
 
 const initialForm = {
     fullName: '',
     email: '',
     phoneCountryCode: '+507',
     phoneNumber: '',
-    documentType: 'Cédula',
+    documentType: 'Cedula',
     documentNumber: '',
     vocation: '',
     secondaryVocation: '',
     province: '',
-    country: 'Panamá',
+    country: 'Panama',
     experienceYears: '',
     availability: '',
     license: 'No',
@@ -116,7 +119,7 @@ function Registro() {
 
         try {
             if (!supabase) {
-                throw new Error('Faltan las variables de Supabase en el entorno.')
+                throw new Error('Missing Supabase environment variables.')
             }
 
             let cvUrl = null
@@ -124,7 +127,7 @@ function Registro() {
                 const file = form.cvFile
                 const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
                 if (!isPdf) {
-                    throw new Error('El CV debe ser un archivo PDF.')
+                    throw new Error('CV must be a PDF file.')
                 }
 
                 const safeName = `${Date.now()}-${file.name}`.replace(/\s+/g, '-')
@@ -160,8 +163,8 @@ function Registro() {
                 country: form.country.trim(),
                 experience_years: Number(form.experienceYears || 0),
                 availability: form.availability,
-                license: form.license === 'Sí',
-                license_country: form.license === 'Sí' ? form.licenseCountry.trim() : null,
+                license: form.license === 'Si',
+                license_country: form.license === 'Si' ? form.licenseCountry.trim() : null,
                 reference_letter_url: cvUrl,
                 status: 'pending',
             }
@@ -172,15 +175,34 @@ function Registro() {
 
             if (insertError) {
                 if (insertError.code === '23505') {
-                    throw new Error('Ya existe un registro con ese documento de identidad.')
+                    throw new Error('A record already exists with that identity document.')
                 }
                 throw insertError
+            }
+
+            if (!supabaseUrl || !supabaseAnonKey) {
+                throw new Error('Missing Supabase environment variables.')
+            }
+
+            const notifyResponse = await fetch(`${supabaseUrl}/functions/v1/candidate-alert`, {
+                method: 'POST',
+                headers: {
+                    apikey: supabaseAnonKey,
+                    Authorization: `Bearer ${supabaseAnonKey}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+
+            if (!notifyResponse.ok) {
+                const details = await notifyResponse.text()
+                console.warn('Notification email failed:', details)
             }
 
             setStatus('success')
             resetForm()
         } catch (submitError) {
-            setError(submitError?.message || 'No se pudo enviar el registro.')
+            setError(submitError?.message || 'Could not send the registration.')
             setStatus('error')
         }
     }
@@ -193,43 +215,43 @@ function Registro() {
                         Registro
                     </p>
                     <h2 className="font-montserrat text-3xl md:text-5xl font-bold text-[#262788] leading-tight">
-                        Regístrate y forma parte de nuestra comunidad.
+                        Register and join our community.
                     </h2>
                     <p className="font-montserrat text-base md:text-lg text-[#2B2B2B] mt-4 max-w-2xl">
-                        Completa tus datos para verificar tu perfil y avanzar en el proceso de ingreso.
+                        Complete your details to verify your profile and move forward in the process.
                     </p>
                     <div className="mt-8 bg-white/80 border border-[#DFE4EA] px-6 py-6">
-                        <h3 className="font-montserrat text-lg font-bold text-[#262788]">Preguntas frecuentes</h3>
+                        <h3 className="font-montserrat text-lg font-bold text-[#262788]">Frequently asked questions</h3>
                         <p className="font-montserrat text-sm md:text-base text-[#2B2B2B] mt-2">
-                            Más adelante esta área puede convertirse en una sección de respuestas rápidas para dudas comunes.
+                            Later this area can become a quick-answer section for common doubts.
                         </p>
                         <p className="font-montserrat text-xs text-[#878787] mt-3">
-                            Por ahora la prioridad es que el usuario vea el valor de la comunidad y complete su registro.
+                            For now the priority is for the user to see the value of the community and finish registration.
                         </p>
                     </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="bg-[#D4FCF4] border border-[#DFE4EA] px-6 py-6 md:px-8 md:py-8 shadow-sm">
                     <h3 className="font-montserrat text-2xl font-bold text-[#262788]">
-                        Formulario de inscripción de talento
+                        Talent registration form
                     </h3>
                     <p className="font-montserrat text-sm text-[#2B2B2B] mt-2 mb-6">
-                        Regístrate y forma parte de nuestra comunidad.
+                        Register and become part of our community.
                     </p>
 
                     <div className="grid gap-4">
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Nombre completo</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Full name</span>
                             <input name="fullName" value={form.fullName} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Correo electrónico</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Email</span>
                             <input name="email" value={form.email} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="email" required />
                         </label>
 
                         <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Código país</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Country code</span>
                                 <select name="phoneCountryCode" value={form.phoneCountryCode} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     {countries.map((country) => (
                                         <option key={country.code} value={country.code}>
@@ -239,14 +261,14 @@ function Registro() {
                                 </select>
                             </label>
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Teléfono</span>
-                                <input name="phoneNumber" value={form.phoneNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" inputMode="tel" placeholder="Número de teléfono" required />
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Phone number</span>
+                                <input name="phoneNumber" value={form.phoneNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="tel" inputMode="tel" placeholder="Phone number" required />
                             </label>
                         </div>
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tipo de documento</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Document type</span>
                                 <select name="documentType" value={form.documentType} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     {documentTypes.map((option) => (
                                         <option key={option} value={option}>
@@ -256,23 +278,23 @@ function Registro() {
                                 </select>
                             </label>
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Número de documento</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Document number</span>
                                 <input name="documentNumber" value={form.documentNumber} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                             </label>
                         </div>
 
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Tu vocación</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Your vocation</span>
                             <input name="vocation" value={form.vocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Segunda vocación</span>
-                            <input name="secondaryVocation" value={form.secondaryVocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" placeholder="Opcional" />
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Second vocation</span>
+                            <input name="secondaryVocation" value={form.secondaryVocation} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" placeholder="Optional" />
                         </label>
 
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Country</span>
                                 <select name="country" value={form.country} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
                                     {Object.keys(provincesByCountry).map((countryName) => (
                                         <option key={countryName} value={countryName}>
@@ -282,9 +304,9 @@ function Registro() {
                                 </select>
                             </label>
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Provincia de residencia</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Province</span>
                                 <select name="province" value={form.province} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
-                                    <option value="">Selecciona una provincia</option>
+                                    <option value="">Select a province</option>
                                     {provinceOptions.map((province) => (
                                         <option key={province} value={province}>
                                             {province}
@@ -295,9 +317,9 @@ function Registro() {
                         </div>
 
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Disponibilidad para viajar</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Travel availability</span>
                             <select name="availability" value={form.availability} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" required>
-                                <option value="">Selecciona una opción</option>
+                                <option value="">Select an option</option>
                                 {availabilityOptions.map((option) => (
                                     <option key={option} value={option}>
                                         {option}
@@ -306,11 +328,11 @@ function Registro() {
                             </select>
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Años de experiencia</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Years of experience</span>
                             <input name="experienceYears" value={form.experienceYears} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="number" min="0" required />
                         </label>
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Licencia para ejercer</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">License to practice</span>
                             <select name="license" value={form.license} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white" required>
                                 {licenseOptions.map((option) => (
                                     <option key={option} value={option}>
@@ -319,14 +341,14 @@ function Registro() {
                                 ))}
                             </select>
                         </label>
-                        {form.license === 'Sí' && (
+                        {form.license === 'Si' && (
                             <label className="grid gap-2">
-                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">País de licencia</span>
+                                <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">License country</span>
                                 <input name="licenseCountry" value={form.licenseCountry} onChange={onChange} className="border border-[#DFE4EA] px-4 py-3 outline-none focus:border-[#262788] bg-white/95" type="text" required />
                             </label>
                         )}
                         <label className="grid gap-2">
-                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">Currículum</span>
+                            <span className="font-montserrat text-sm font-semibold text-[#2B2B2B]">CV</span>
                             <input
                                 ref={fileInputRef}
                                 name="cvFile"
@@ -336,7 +358,7 @@ function Registro() {
                                 accept=".pdf,application/pdf"
                             />
                             <span className="font-montserrat text-xs text-[#878787]">
-                                Solo PDF de 45 MB o menos.
+                                Only PDF files up to 45 MB.
                             </span>
                         </label>
                     </div>
@@ -346,7 +368,7 @@ function Registro() {
                         disabled={status === 'submitting'}
                         className="mt-6 w-full bg-[#262788] text-[#F8FCFB] font-montserrat font-semibold px-5 py-3 hover:bg-[#422C9B] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        {status === 'submitting' ? 'Enviando...' : 'Enviar registro'}
+                        {status === 'submitting' ? 'Sending...' : 'Submit registration'}
                     </button>
 
                     {error && (
@@ -357,12 +379,12 @@ function Registro() {
 
                     {status === 'success' && (
                         <p className="font-montserrat text-sm text-[#262788] mt-4 font-semibold">
-                            Registro enviado. Lo revisaremos pronto.
+                            Registration sent. We will review it soon.
                         </p>
                     )}
 
                     <p className="font-montserrat text-xs text-[#262788] mt-4">
-                        Los datos suministrados se verificarán al encontrar tu eslabón de enganche.
+                        Submitted data will be verified when your matching connection is found.
                     </p>
                 </form>
             </div>
@@ -371,3 +393,4 @@ function Registro() {
 }
 
 export default Registro
+
